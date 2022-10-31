@@ -1,0 +1,3 @@
+[submodule "bcos-tars-protocol"]
+	path = bcos-tars-protocol
+	url = git@github.com:FISCO-BCOS/bcos-tars-protocol.git
