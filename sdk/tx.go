@@ -66,3 +66,7 @@ func SignTransaction(privateKey string, txHash string, txDataHex string, attribu
 
 	return _txHex, nil
 }
+
+func CreateSignedTransaction(privateKey string, groupId string, chainId string, to string, dataHex string, abiJson string, blockLimit int64) (txHash string, txHex string, err error) {
+	return tx.CreateSignedTransaction(privateKey, groupId, chainId, to, dataHex, abiJson, blockLimit, 0)
+}
