@@ -1,6 +1,6 @@
 module github.com/dinghongchao/bcos-go-sdk
 
-go 1.16
+go 1.17
 
 require (
 	github.com/TarsCloud/TarsGo v1.3.6
