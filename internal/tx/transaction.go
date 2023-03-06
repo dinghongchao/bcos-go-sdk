@@ -106,12 +106,12 @@ func PrivateKeyToAddress(privateKey string) (string, error) {
 	}
 
 	//// 获取公钥并去除头部0x04
-	compressed := privKey.PubKey().SerializeUncompressed()[1:]
-	fmt.Printf("公钥为x: %s\n", hex.EncodeToString(compressed))
+	//compressed := privKey.PubKey().SerializeUncompressed()[1:]
+	//fmt.Printf("公钥为x: %s\n", hex.EncodeToString(compressed))
 
 	//// 获取地址
 	addr := crypto.PubkeyToAddress(*privKey.PubKey())
-	fmt.Printf("地址为: %s\n", addr.Hex())
+	//fmt.Printf("地址为: %s\n", addr.Hex())
 
 	return addr.Hex(), nil
 }
@@ -211,19 +211,19 @@ func CreateSignedTransaction(privateKey string, groupId string, chainId string, 
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Println("txData", txData)
+	//fmt.Println("txData", txData)
 
 	txDataHash, err := CalculateTransactionDataHash(txData)
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Println("txDataHash", txDataHash)
+	//fmt.Println("txDataHash", txDataHash)
 
 	signedTxDataHash, err := SignTransactionDataHash(privateKey, txDataHash)
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Println("signedTxDataHash", signedTxDataHash)
+	//fmt.Println("signedTxDataHash", signedTxDataHash)
 
 	from, err := PrivateKeyToAddress(privateKey)
 	if err != nil {
@@ -238,7 +238,7 @@ func CreateSignedTransaction(privateKey string, groupId string, chainId string, 
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Println("_txHex", _txHex)
+	//fmt.Println("_txHex", _txHex)
 
 	return txDataHash, _txHex, nil
 }
