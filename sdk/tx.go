@@ -79,7 +79,7 @@ func CreateSignedTransaction(privateKey string, groupId string, chainId string, 
 	if err != nil {
 		return "", "", err
 	}
-	signedTxDataHex, err := SignTransaction(privateKey, txHash, txDataHex, 0)
+	signedTxDataHex, err := SignTransaction(privateKey, txHash, txDataHex, 1)
 	if err != nil {
 		return "", "", err
 	}
