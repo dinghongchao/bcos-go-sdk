@@ -195,7 +195,7 @@ func CreateTransaction(from string, txData *bcostars.TransactionData, txDataHash
 		Signature:  HexByte2Int8(common.FromHex(signedTxDataHash)),
 		ImportTime: 0,
 		Attribute:  attribute,
-		Source:     "",
+		ExtraData:  "",
 		Sender:     HexByte2Int8(common.FromHex(strings.ToLower(from))),
 	}, nil
 }
