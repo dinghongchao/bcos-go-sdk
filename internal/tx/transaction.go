@@ -55,7 +55,7 @@ func CreateTransactionData(groupId string, chainId string, to string, dataHex st
 			Nonce:      Nonce(),
 			//To:    "0x0000000000000000000000000000000000000000",
 			Input: HexByte2Int8(common.FromHex(dataHex)),
-			//Abi:   abiJson,
+			Abi:   abiJson,
 		}, nil
 	}
 
@@ -69,6 +69,7 @@ func CreateTransactionData(groupId string, chainId string, to string, dataHex st
 		To:         strings.ToLower(to),
 		//Input:      HexByte2Int8(dataHex),
 		Input: HexByte2Int8(common.FromHex(dataHex)),
+		Abi:   "",
 	}, nil
 }
 func hash(buf []byte) string {
