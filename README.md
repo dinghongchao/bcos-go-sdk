@@ -1,4 +1,4 @@
-# yongan-go-sdk
+# bcos-go-sdk
 
 ```bash
 go install github.com/TarsCloud/TarsGo/tars/tools/tarsgo@latest
