@@ -84,7 +84,7 @@ func CalculateTransactionDataHash(txData *bcostars.TransactionData) (string, err
 	}
 
 	//return HexStringWithPrefix(hash(buf.ToBytes())), nil
-	fmt.Printf("txData byte为: %x\n", buf.ToBytes())
+	fmt.Println(buf.ToBytes())
 	return hash(buf.ToBytes()), nil
 }
 
