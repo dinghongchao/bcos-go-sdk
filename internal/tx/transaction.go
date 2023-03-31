@@ -1,6 +1,7 @@
 package tx
 
 import (
+	"encoding/binary"
 	//ecdsa2 "crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
@@ -79,12 +80,23 @@ func hash(buf []byte) string {
 func CalculateTransactionDataHash(txData *bcostars.TransactionData) (string, error) {
 	// Keccak256 hash
 	buf := codec.NewBuffer()
-	if err := txData.WriteTo(buf); err != nil {
-		return "", err
-	}
-
+	//if err := txData.WriteTo(buf); err != nil {
+	//	return "", err
+	//}
+	versionBigEndian := make([]byte, 4)
+	binary.BigEndian.PutUint32(versionBigEndian, uint32(txData.Version))
+	buf.WriteBytes(versionBigEndian)
+	buf.WriteBytes([]byte(txData.ChainID))
+	buf.WriteBytes([]byte(txData.GroupID))
+	blockLimitBigEndian := make([]byte, 8)
+	binary.BigEndian.PutUint64(blockLimitBigEndian, uint64(txData.BlockLimit))
+	buf.WriteBytes(blockLimitBigEndian)
+	buf.WriteBytes([]byte(txData.Nonce))
+	buf.WriteBytes([]byte(txData.To))
+	buf.WriteSliceInt8(txData.Input)
+	buf.WriteBytes([]byte(txData.Abi))
 	//return HexStringWithPrefix(hash(buf.ToBytes())), nil
-	fmt.Println(buf.ToBytes())
+	//fmt.Println(buf.ToBytes())
 	return hash(buf.ToBytes()), nil
 }
 
