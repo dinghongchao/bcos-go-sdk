@@ -2,6 +2,8 @@ package tx
 
 import (
 	"encoding/binary"
+	"math/big"
+
 	//ecdsa2 "crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
@@ -111,6 +113,14 @@ func Nonce() string {
 
 	u256 := uint256.NewInt(0).SetBytes(buf)
 	return fmt.Sprint(u256)
+}
+
+func NonceNew() string {
+	rand.Seed(time.Now().UnixNano())
+	var num big.Int
+	num.SetUint64(rand.Uint64())
+	str := num.String()
+	return str
 }
 
 func PrivateKeyToAddress(privateKey string) (string, error) {
@@ -255,6 +265,44 @@ func CreateSignedTransaction(privateKey string, groupId string, chainId string, 
 	//fmt.Println("_txHex", _txHex)
 
 	return txDataHash, _txHex, nil
+}
+
+func CreateSignedTransactionReturnNonce(privateKey string, groupId string, chainId string, to string, dataHex string, abiJson string, blockLimit int64, attribute int32) (txHash string, txHex string, nonce string, err error) {
+	txData, err := CreateTransactionData(groupId, chainId, to, dataHex, abiJson, blockLimit)
+	if err != nil {
+		return "", "", "", err
+	}
+	nonce = txData.Nonce
+	//fmt.Println("txData", txData)
+
+	txDataHash, err := CalculateTransactionDataHash(txData)
+	if err != nil {
+		return "", "", "", err
+	}
+	//fmt.Println("txDataHash", txDataHash)
+
+	signedTxDataHash, err := SignTransactionDataHash(privateKey, txDataHash)
+	if err != nil {
+		return "", "", "", err
+	}
+	//fmt.Println("signedTxDataHash", signedTxDataHash)
+
+	from, err := PrivateKeyToAddress(privateKey)
+	if err != nil {
+		return "", "", "", err
+	}
+	tx, err := CreateTransaction(from, txData, txDataHash, signedTxDataHash, attribute)
+	if err != nil {
+		return "", "", "", err
+	}
+
+	_txHex, err := EncodeTransaction(tx)
+	if err != nil {
+		return "", "", "", err
+	}
+	//fmt.Println("_txHex", _txHex)
+
+	return txDataHash, _txHex, nonce, nil
 }
 
 func HexByte2Int8(dataHex []byte) []int8 {

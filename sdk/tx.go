@@ -70,3 +70,7 @@ func SignTransaction(privateKey string, txHash string, txDataHex string, attribu
 func CreateSignedTransaction(privateKey string, groupId string, chainId string, to string, dataHex string, abiJson string, blockLimit int64) (txHash string, txHex string, err error) {
 	return tx.CreateSignedTransaction(privateKey, groupId, chainId, to, dataHex, abiJson, blockLimit, 0)
 }
+
+func CreateSignedTransactionReturnNonce(privateKey string, groupId string, chainId string, to string, dataHex string, abiJson string, blockLimit int64) (txHash string, txHex string, nonce string, err error) {
+	return tx.CreateSignedTransactionReturnNonce(privateKey, groupId, chainId, to, dataHex, abiJson, blockLimit, 0)
+}
