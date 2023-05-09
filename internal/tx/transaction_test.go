@@ -114,31 +114,10 @@ func TestNonce(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Nonce()
+			got, _ := Nonce()
 			fmt.Println(got)
 			if got == tt.dontWant {
 				t.Errorf("Nonce() = %v, dont't want %v", got, tt.dontWant)
-			}
-		})
-	}
-}
-
-func TestNonceNew(t *testing.T) {
-	tests := []struct {
-		name     string
-		dontWant string
-	}{
-		{
-			"default",
-			"",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := NonceNew()
-			fmt.Println(got)
-			if got == tt.dontWant {
-				t.Errorf("NonceNew() = %v, dont't want %v", got, tt.dontWant)
 			}
 		})
 	}

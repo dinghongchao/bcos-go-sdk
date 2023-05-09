@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"math/big"
 
+	"crypto/rand"
 	//ecdsa2 "crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
@@ -12,14 +13,12 @@ import (
 	"github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 	//"github.com/ethereum/go-ethereum/crypto"
 	"github.com/dinghongchao/bcos-go-sdk/internal/crypto"
-	"github.com/holiman/uint256"
-	"math/rand"
+	//"math/rand"
 	//"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/dinghongchao/bcos-go-sdk/internal/common"
 	"github.com/dinghongchao/bcos-go-sdk/internal/common/hexutil"
 	"github.com/dinghongchao/bcos-go-sdk/tars-protocol/bcostars"
 	"strings"
-	"time"
 )
 
 //func PackDataHexFromAbiJson(abiJson string, name string, args ...interface{}) ([]byte, error) {
@@ -47,7 +46,10 @@ func CreateTransactionData(groupId string, chainId string, to string, dataHex st
 			return nil, err
 		}
 	}
-
+	nonce, err := Nonce()
+	if err != nil {
+		return nil, err
+	}
 	if len(abiJson) > 0 {
 		// 合约部署
 		return &bcostars.TransactionData{
@@ -55,7 +57,7 @@ func CreateTransactionData(groupId string, chainId string, to string, dataHex st
 			ChainID:    chainId,
 			GroupID:    groupId,
 			BlockLimit: blockLimit,
-			Nonce:      Nonce(),
+			Nonce:      nonce,
 			//To:    "0x0000000000000000000000000000000000000000",
 			Input: HexByte2Int8(common.FromHex(dataHex)),
 			Abi:   abiJson,
@@ -68,7 +70,7 @@ func CreateTransactionData(groupId string, chainId string, to string, dataHex st
 		ChainID:    chainId,
 		GroupID:    groupId,
 		BlockLimit: blockLimit,
-		Nonce:      Nonce(),
+		Nonce:      nonce,
 		To:         strings.ToLower(to),
 		//Input:      HexByte2Int8(dataHex),
 		Input: HexByte2Int8(common.FromHex(dataHex)),
@@ -102,25 +104,17 @@ func CalculateTransactionDataHash(txData *bcostars.TransactionData) (string, err
 	return hash(buf.ToBytes()), nil
 }
 
-func Nonce() string {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	var buf []byte
-	for i := 0; i < 32; i++ {
-		it := r.Intn(255)
-		buf = append(buf, byte(it))
+func Nonce() (string, error) {
+	// generate random Nonce between 0 - 2^250 - 1
+	max := new(big.Int)
+	max.Exp(big.NewInt(2), big.NewInt(250), nil).Sub(max, big.NewInt(1))
+	//Generate cryptographically strong pseudo-random between 0 - max
+	nonce, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		//error handling
+		return "", fmt.Errorf("failed to generate nonce: %v", err)
 	}
-
-	u256 := uint256.NewInt(0).SetBytes(buf)
-	return fmt.Sprint(u256)
-}
-
-func NonceNew() string {
-	rand.Seed(time.Now().UnixNano())
-	var num big.Int
-	num.SetUint64(rand.Uint64())
-	str := num.String()
-	return str
+	return nonce.String(), nil
 }
 
 func PrivateKeyToAddress(privateKey string) (string, error) {
